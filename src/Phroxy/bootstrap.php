@@ -1,7 +1,7 @@
 <?php
 
 	/**
-	 * Bootstrapper for Blue Shift
+	 * Bootstrapper for Phroxy
 	 *
 	 * @package   Phroxy
 	 * @version   1.0

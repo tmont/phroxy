@@ -1,14 +1,12 @@
 <?php
 
-	namespace BlueShiftTests;
+	namespace Phroxy\Tests;
 	
-	use ReflectionClass;
-	use ReflectionMethod;
-	use BlueShift\ProxyBuilder;
-	use BlueShift\InterceptorCache;
-	use BlueShift\Interceptor;
-	use BlueShift\InterceptionContext;
-	use Exception, stdClass;
+	use ReflectionClass, Exception, stdClass, ReflectionMethod;
+	use Phroxy\ProxyBuilder;
+	use Phroxy\InterceptorCache;
+	use Phroxy\Interceptor;
+	use Phroxy\InterceptionContext;
 
 	class ProxyTest extends \PHPUnit_Framework_TestCase {
 		
@@ -26,21 +24,21 @@
 		}
 		
 		public function testFinalMethodsAreNotIntercepted() {
-			$interceptor1 = $this->getMock('BlueShift\Interceptor');
+			$interceptor1 = $this->getMock('Phroxy\Interceptor');
 			$interceptor1->expects($this->never())->method('onBeforeMethodCall');
 			$interceptor1->expects($this->never())->method('onAfterMethodCall');
 			
 			InterceptorCache::registerInterceptor($interceptor1, function($x) { return true; });
 			
-			$proxy = $this->builder->build(new ReflectionClass('BlueShiftTests\ClassToBeProxied'));
-			self::assertType('BlueShiftTests\ClassToBeProxied', $proxy);
+			$proxy = $this->builder->build(new ReflectionClass('Phroxy\Tests\ClassToBeProxied'));
+			self::assertType('Phroxy\Tests\ClassToBeProxied', $proxy);
 			
 			$proxy->foo();
 			self::assertEquals(1, ClassToBeProxied::$fooCalled);
 		}
 		
 		public function testInterceptorBreaksOnBeforeMethodCall() {
-			$interceptor1 = $this->getMock('BlueShift\Interceptor');
+			$interceptor1 = $this->getMock('Phroxy\Interceptor');
 			$interceptor1->expects($this->once())->method('onBeforeMethodCall');
 			$interceptor1->expects($this->never())->method('onAfterMethodCall');
 			
@@ -49,18 +47,18 @@
 			InterceptorCache::registerInterceptor($interceptor1, function($x) { return true; });
 			InterceptorCache::registerInterceptor($interceptor2, function($x) { return true; });
 			
-			$proxy = $this->builder->build(new ReflectionClass('BlueShiftTests\ClassToBeProxied'));
+			$proxy = $this->builder->build(new ReflectionClass('Phroxy\Tests\ClassToBeProxied'));
 			$proxy->bar();
 		}
 		
 		public function testSettingExceptionWithoutPreventingNextStillCallsParent() {
 			InterceptorCache::registerInterceptor(new ExceptionInterceptor(), function($x) { return true; });
 			
-			$proxy = $this->builder->build(new ReflectionClass('BlueShiftTests\ClassToBeProxied'));
+			$proxy = $this->builder->build(new ReflectionClass('Phroxy\Tests\ClassToBeProxied'));
 			
 			try {
 				$proxy->bar();
-				self::assertFail('Exception should have been thrown');
+				self::fail('Exception should have been thrown');
 			} catch (Exception $e) {
 				self::assertEquals('oh hai!', $e->getMessage());
 			}
@@ -71,11 +69,11 @@
 		public function testSettingExceptionAndtPreventingNextDoesNotCallParent() {
 			InterceptorCache::registerInterceptor(new ExceptionAndPreventNextInterceptor(), function($x) { return true; });
 			
-			$proxy = $this->builder->build(new ReflectionClass('BlueShiftTests\ClassToBeProxied'));
+			$proxy = $this->builder->build(new ReflectionClass('Phroxy\Tests\ClassToBeProxied'));
 			
 			try {
 				$proxy->bar();
-				self::assertFail('Exception should have been thrown');
+				self::fail('Exception should have been thrown');
 			} catch (Exception $e) {
 				self::assertEquals('oh hai!', $e->getMessage());
 			}
@@ -84,18 +82,18 @@
 		}
 		
 		public function testInterceptorFilter() {
-			$interceptor1 = $this->getMock('BlueShift\Interceptor');
+			$interceptor1 = $this->getMock('Phroxy\Interceptor');
 			$interceptor1->expects($this->once())->method('onBeforeMethodCall');
 			$interceptor1->expects($this->once())->method('onAfterMethodCall');
-			
-			$interceptor2 = $this->getMock('BlueShift\Interceptor');
+
+			$interceptor2 = $this->getMock('Phroxy\Interceptor');
 			$interceptor2->expects($this->never())->method('onBeforeMethodCall');
 			$interceptor2->expects($this->never())->method('onAfterMethodCall');
-			
+
 			InterceptorCache::registerInterceptor($interceptor1, function(ReflectionMethod $x) { return $x->getName() === 'bar'; });
 			InterceptorCache::registerInterceptor($interceptor2, function(ReflectionMethod $x) { return $x->getName() === 'baz'; });
-			
-			$proxy = $this->builder->build(new ReflectionClass('BlueShiftTests\ClassToBeProxied'));
+
+			$proxy = $this->builder->build(new ReflectionClass('Phroxy\Tests\ClassToBeProxied'));
 			$proxy->bar();
 		}
 		
@@ -103,7 +101,7 @@
 			$interceptor = new ReturnAfterCallInterceptor();
 			InterceptorCache::registerInterceptor($interceptor, function($x) { return true; });
 			
-			$proxy = $this->builder->build(new ReflectionClass('BlueShiftTests\ClassToBeProxied'));
+			$proxy = $this->builder->build(new ReflectionClass('Phroxy\Tests\ClassToBeProxied'));
 			self::assertEquals('oh hai!', $proxy->bar());
 		}
 		
@@ -111,33 +109,33 @@
 			$interceptor = new ReturnBeforeCallInterceptor();
 			InterceptorCache::registerInterceptor($interceptor, function($x) { return true; });
 			
-			$proxy = $this->builder->build(new ReflectionClass('BlueShiftTests\ClassToBeProxied'));
+			$proxy = $this->builder->build(new ReflectionClass('Phroxy\Tests\ClassToBeProxied'));
 			self::assertEquals('bar', $proxy->bar());
 		}
 		
 		public function testFinalClassesCannotBeProxied() {
-			$this->setExpectedException('BlueShift\ProxyException');
-			$this->builder->build(new ReflectionClass('BlueShiftTests\Unproxyable1'));
+			$this->setExpectedException('Phroxy\ProxyException');
+			$this->builder->build(new ReflectionClass('Phroxy\Tests\Unproxyable1'));
 		}
 		
 		public function testAbstractClassesCannotBeProxied() {
-			$this->setExpectedException('BlueShift\ProxyException');
-			$this->builder->build(new ReflectionClass('BlueShiftTests\Unproxyable2'));
+			$this->setExpectedException('Phroxy\ProxyException');
+			$this->builder->build(new ReflectionClass('Phroxy\Tests\Unproxyable2'));
 		}
 		
 		public function testInterfacesCannotBeProxied() {
-			$this->setExpectedException('BlueShift\ProxyException');
-			$this->builder->build(new ReflectionClass('BlueShiftTests\Unproxyable3'));
+			$this->setExpectedException('Phroxy\ProxyException');
+			$this->builder->build(new ReflectionClass('Phroxy\Tests\Unproxyable3'));
 		}
 		
 		public function testUninstantiableClassesCannotBeProxied() {
-			$this->setExpectedException('BlueShift\ProxyException');
-			$this->builder->build(new ReflectionClass('BlueShiftTests\Unproxyable4'));
+			$this->setExpectedException('Phroxy\ProxyException');
+			$this->builder->build(new ReflectionClass('Phroxy\Tests\Unproxyable4'));
 		}
 		
 		public function testCreateProxyWithArgs() {
-			$proxy = $this->builder->build(new ReflectionClass('BlueShiftTests\ClassWithArgs'), array('foo'));
-			self::assertType('BlueShiftTests\ClassWithArgs', $proxy);
+			$proxy = $this->builder->build(new ReflectionClass('Phroxy\Tests\ClassWithArgs'), array('foo'));
+			self::assertType('Phroxy\Tests\ClassWithArgs', $proxy);
 			self::assertEquals('foo', $proxy->foo);
 		}
 		
@@ -196,7 +194,6 @@
 		public function onBeforeMethodCall(InterceptionContext $context) {
 			
 		}
-		
 		
 		public function onAfterMethodCall(InterceptionContext $context) {
 			$context->setReturnValue('oh hai!');

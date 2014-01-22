@@ -1,7 +1,6 @@
 <project name="Phroxy" basedir=".">
 	
 	<property file="./properties/build.properties" prefix="build"/>
-	<property file="./properties/product.properties" prefix="product"/>
 	<property file="./properties/dir.properties" prefix="dir"/>
 	<property environment="env"/>
 
@@ -34,9 +33,7 @@
 		<tstamp>
 			<format property="TIMESTAMP" pattern="yyyy-MM-dd HH:mm:ss"/>
 		</tstamp>
-		<echo level="info">Beginning build for ${product.name} ${product.version}</echo>
-		<echo level="info">  ${TIMESTAMP}</echo>
-		<echo level="info"/>
+		<echo level="info">${TIMESTAMP}</echo>
 	</target>
 	
 </project>

@@ -8,7 +8,7 @@
 	 * @copyright (c) 2010 Tommy Montgomery
 	 */
 
-	namespace Phroxy;
+	namespace Tmont\Phroxy;
 
 	use Closure, ReflectionMethod;
 	
@@ -28,7 +28,8 @@
 		 * Registers an interceptor in the cache
 		 *
 		 * @param Interceptor $interceptor
-		 * @param Closure     $matcher     Function that takes a ReflectionMethod as an argument and returns a boolean
+		 * @param Closure     $matcher     Function that takes a ReflectionMethod as an argument
+		 *                                 and returns a boolean
 		 */
 		public static function registerInterceptor(Interceptor $interceptor, Closure $matcher) {
 			self::$interceptors[] = array('interceptor' => $interceptor, 'matcher' => $matcher);
@@ -47,7 +48,7 @@
 		 * Gets all interceptors for the specified method invocation
 		 *
 		 * @param  ReflectionMethod $method
-		 * @return array
+		 * @return Interceptor[]
 		 */
 		public static function getInterceptors(ReflectionMethod $method) {
 			$key = $method->getDeclaringClass()->getName() . '::' . $method->getName();

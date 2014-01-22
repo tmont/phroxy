@@ -8,9 +8,9 @@
 	 * @copyright (c) 2010 Tommy Montgomery
 	 */
 
-	namespace Phroxy;
+	namespace Tmont\Phroxy;
 	
-	use ReflectionClass, ReflectionMethod, Reflector;
+	use ReflectionClass, ReflectionMethod;
 
 	/**
 	 * Reflection utilities

@@ -8,7 +8,7 @@
 	 * @copyright (c) 2010 Tommy Montgomery
 	 */
 
-	namespace Phroxy;
+	namespace Tmont\Phroxy;
 
 	use Exception, ReflectionMethod;
 
@@ -86,7 +86,7 @@
 		/**
 		 * Gets the return value of the method invocation
 		 *
-		 * @return anything
+		 * @return mixed
 		 */
 		public function getReturnValue() {
 			return $this->returnValue;
@@ -95,7 +95,7 @@
 		/**
 		 * Sets the return value of the method invocation
 		 *
-		 * @param anything $value
+		 * @param mixed $value
 		 */
 		public function setReturnValue($value) {
 			$this->returnValue = $value;
@@ -105,7 +105,7 @@
 		 * Gets user-defined data from the dictionary
 		 *
 		 * @param  string|int $key If this is not set, then the entire data array is returned
-		 * @return anything
+		 * @return mixed
 		 */
 		public function getData($key = null) {
 			if (is_string($key) || is_int($key)) {
@@ -119,7 +119,7 @@
 		 * Sets a piece of user-defined data in the dictionary
 		 *
 		 * @param string|int $key
-		 * @param anything   $value
+		 * @param mixed      $value
 		 */
 		public function setData($key, $value) {
 			if (is_string($key) || is_int($key)) {

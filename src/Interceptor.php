@@ -8,7 +8,7 @@
 	 * @copyright (c) 2010 Tommy Montgomery
 	 */
 
-	namespace Phroxy;
+	namespace Tmont\Phroxy;
 
 	/**
 	 * Interface for method interceptors on proxied types

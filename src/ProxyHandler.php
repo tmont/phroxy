@@ -8,7 +8,7 @@
 	 * @copyright (c) 2010 Tommy Montgomery
 	 */
 
-	namespace Phroxy;
+	namespace Tmont\Phroxy;
 	
 	/**
 	 * Class used by proxies to invoke interceptors
@@ -34,7 +34,7 @@
 		 * @param InterceptionContext $context
 		 */
 		public static function interceptAfter(InterceptionContext $context) {
-			self::iterateOverInterceptors($context, 'afer');
+			self::iterateOverInterceptors($context, 'after');
 		}
 		
 		private static function iterateOverInterceptors(InterceptionContext $context, $event) {
@@ -45,7 +45,9 @@
 						break;
 					}
 					
-					($event === 'before') ? $interceptor->onBeforeMethodCall($context) : $interceptor->onAfterMethodCall($context);
+					($event === 'before')
+						? $interceptor->onBeforeMethodCall($context)
+						: $interceptor->onAfterMethodCall($context);
 				}
 			}
 		}

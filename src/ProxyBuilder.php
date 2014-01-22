@@ -8,7 +8,7 @@
 	 * @copyright (c) 2010 Tommy Montgomery
 	 */
 
-	namespace Phroxy;
+	namespace Tmont\Phroxy;
 	
 	use ReflectionClass, ReflectionMethod, ReflectionParameter;
 	
@@ -26,7 +26,7 @@
 		 *
 		 * @var string
 		 */
-		const DEFAULT_NAMESPACE = 'Phroxy';
+		const DEFAULT_NAMESPACE = __NAMESPACE__;
 		
 		/**
 		 * Creates an interceptable proxy of the given class
@@ -98,7 +98,7 @@
 		 * @return string Literal PHP code
 		 */
 		protected function buildNamespaceDeclaration(ReflectionClass $class) {
-			return "namespace Phroxy;\nuse ReflectionMethod, Exception;\n\n";
+			return "namespace " . __NAMESPACE__ . ";\nuse ReflectionMethod, Exception;\n\n";
 		}
 		
 		/**

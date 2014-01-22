@@ -33,7 +33,6 @@ class ReturnBeforeCallInterceptor implements Interceptor {
 		$context->setReturnValue('oh hai!');
 	}
 
-
 	public function onAfterMethodCall(InterceptionContext $context) {}
 }
 
